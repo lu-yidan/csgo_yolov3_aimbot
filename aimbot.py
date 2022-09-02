@@ -41,9 +41,11 @@ net = cv2.dnn.readNetFromDarknet(CONFIG_FILE, WEIGHT_FILE)
 if cv2.cuda.getCudaEnabledDeviceCount():    
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
     net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+    print("您使用的opencv支持GPU，当前GPU模式运行")
 #如果你使用的opencv只支持CPU
 else:   
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+    print("您使用的opencv不支持GPU，当前CPU模式运行")
 
 
 # 获取网络所有层的名称
