@@ -6,6 +6,8 @@
 
 首先启动游戏，如果在启动游戏之前运行此脚本，脚本会因为找不到窗口句柄而异常退出
 
+游戏运行时**q**键退出；**p**键暂停或者继续
+
 游戏设置->视频设置->显示模式==**窗口模式**
 
 游戏设置->键盘/鼠标->原始数据输入==**关闭**
@@ -24,9 +26,13 @@ y = int(boxes[min_at][1] + boxes[min_at][3]/7) + rect[1]# For head shot
 
 经过实测将cfg文件的train模式改为test模式可以将神经网络时延减少70ms，此版本已更改
 
+tin版本的权重速度更快，但是精度会下降，根据你的需要酌情选择
+
 ```py
 CONFIG_FILE = './yolov3_416.cfg'
 WEIGHT_FILE = './yolov3_416.weights'
+# CONFIG_FILE = './yolov3_tiny.cfg'
+# WEIGHT_FILE = './yolov3_tiny.weights'
 ```
 
 **关于模型**

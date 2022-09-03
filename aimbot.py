@@ -1,3 +1,4 @@
+from operator import truediv
 import keyboard
 import numpy as np
 import pyautogui
@@ -7,35 +8,16 @@ import math
 import time
 
 '''
-Fastest way to take a screenshot with python on windows
+Fastest way to take a screenshot with python on windows, trying implementing...
 https://blog.csdn.net/jokerzhanglin/article/details/117201541
 https://stackoverflow.com/questions/3586046/fastest-way-to-take-a-screenshot-with-python-on-windows
 '''
-def window_capture(filename):
-    hwnd = 0  # 窗口的编号，0号表示当前活跃窗口
-    # 根据窗口句柄获取窗口的设备上下文DC（Divice Context）
-    hwndDC = win32gui.GetWindowDC(hwnd)
-    # 根据窗口的DC获取mfcDC
-    mfcDC = win32ui.CreateDCFromHandle(hwndDC)
-    # mfcDC创建可兼容的DC
-    saveDC = mfcDC.CreateCompatibleDC()
-    # 创建bigmap准备保存图片
-    saveBitMap = win32ui.CreateBitmap()
-    # 获取监控器信息
-    MoniterDev = win32api.EnumDisplayMonitors(None, None)
-    w = MoniterDev[0][2][2]
-    h = MoniterDev[0][2][3]
-    # print w,h　　　#图片大小
-    # 为bitmap开辟空间
-    saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
-    # 高度saveDC，将截图保存到saveBitmap中
-    saveDC.SelectObject(saveBitMap)
-    # 截取从左上角（0，0）长宽为（w，h）的图片
-    saveDC.BitBlt((0, 0), (w, h), mfcDC, (0, 0), win32con.SRCCOPY)
-    saveBitMap.SaveBitmapFile(saveDC, filename)
 
-CONFIG_FILE = './yolov3_416.cfg'
-WEIGHT_FILE = './yolov3_416.weights'
+# CONFIG_FILE = './yolov3_416.cfg'
+# WEIGHT_FILE = './yolov3_416.weights'
+CONFIG_FILE = './yolov3_tiny.cfg'
+WEIGHT_FILE = './yolov3_tiny.weights'
+
 net = cv2.dnn.readNetFromDarknet(CONFIG_FILE, WEIGHT_FILE)
 #如果你使用的cv2支持GPU
 if cv2.cuda.getCudaEnabledDeviceCount():    
@@ -126,7 +108,7 @@ while True:
 
         # boxes[min_at] = [x,y,w,h]; 这里x,y是框左上角的坐标
         # 经过如下重新计算，获得人物头的坐标。x = x + w/2 + left_top; y = y + h/7 + right_top
-        # 注意，此时获得的坐标是相对于游戏窗口的左上角而言的，
+        # 注意，此时获得的坐标是相对于pm窗口的左上角而言的，
         x = int(boxes[min_at][0] + boxes[min_at][2]/2) + rect[0]
         y = int(boxes[min_at][1] + boxes[min_at][3]/7) + rect[1]# For head shot
 
@@ -135,6 +117,7 @@ while True:
         # 使用win32api移动鼠标并射击的时间是5-10ms，使用pyautogui则是200ms
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        time.sleep(0.15)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
         # pyautogui.moveTo(x,y)
         # pyautogui.click()
@@ -151,7 +134,10 @@ while True:
         print('QUIT!')
         cv2.destroyAllWindows()
         break  # finishing the loop
-    # 接收到p时，暂停3s
-    if keyboard.is_pressed('p'):  # if key 'q' is pressed
-        print('PARSE 3S')
-        time.sleep(3)
+    # 接收到p时，暂停or继续
+    if keyboard.is_pressed('p'):  # if key 'p' is pressed
+        print('PARSE!')
+        time.sleep(1)
+        keyboard.wait('p')
+        print('CONTINUE!')
+        continue
